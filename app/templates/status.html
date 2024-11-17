@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Status</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Check Loan Status</h2>
+        <form id="statusForm" method="GET" action="/loan/loan-status">
+            <input type="text" name="loan_id" placeholder="Loan ID" required>
+            <button type="submit">Check Status</button>
+        </form>
+        <div id="statusResult"></div>
+    </div>
+</body>
+</html>

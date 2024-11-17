@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Application</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Loan Application</h2>
+        <form id="loanForm" method="POST">
+            <input type="number" name="amount" placeholder="Loan Amount" required>
+            <input type="number" name="tenure" placeholder="Tenure (Months)" required>
+            <input type="text" name="purpose" placeholder="Purpose of Loan" required>
+            <button type="submit">Apply</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loanForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent the default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            // Convert form data to a plain object
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Retrieve the JWT token from localStorage
+            const token = localStorage.getItem('auth_token');  // Make sure the token is set when user logs in
+
+            if (!token) {
+                alert("Authorization token is missing.");
+                return;
+            }
+
+            // Send POST request with JSON payload and Authorization token
+            fetch('/loan/apply-loan', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,  // Include the token in the Authorization header
+                    'Content-Type': 'application/json'    // Set Content-Type to application/json
+                },
+                body: JSON.stringify(data)  // Convert form data to JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // Handle the server response
+                if (data.message) {
+                    alert("Loan application submitted successfully!");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error submitting loan application.");
+            });
+        });
+    </script>
+</body>
+</html>

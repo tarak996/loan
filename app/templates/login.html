@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit"><a href="/loan/apply-loan">Login</a></button>
+        </form>
+
+        <p>Don't have an account? <a href="/">Register here</a></p>
+    </div>
+
+    <script>
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch('/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                if (data.access_token) {
+                    // Store JWT token in localStorage or sessionStorage
+                    localStorage.setItem('access_token', data.access_token);
+
+                    // Redirect based on user role
+                    if (data.role === 'admin') {
+                        // Redirect to the loan application page
+                        window.location.href = '/apply-loan';
+                    } else {
+                        // Redirect to user-specific page (e.g., user dashboard)
+                        window.location.href = '/dashboard';  // Change as per your routing
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
